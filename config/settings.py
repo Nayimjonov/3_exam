@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'cars',
     'dealers',
     'images',
+    'listings',
 
 ]
 
