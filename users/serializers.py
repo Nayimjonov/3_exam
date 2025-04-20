@@ -1,9 +1,11 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import UserProfile
+from rest_framework.authtoken.models import Token
 
 
 User = get_user_model()
+
 
 class RegisterSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
@@ -13,7 +15,7 @@ class RegisterSerializer(serializers.Serializer):
     password_confirm = serializers.CharField(write_only=True)
     first_name = serializers.CharField()
     last_name = serializers.CharField()
-    user_type = serializers.CharField()
+    user_type = serializers.ChoiceField(choices=UserProfile.CHOICES_USER_TYPE, write_only=True)
     token = serializers.CharField(read_only=True)
 
     def validate(self, data):
@@ -22,12 +24,38 @@ class RegisterSerializer(serializers.Serializer):
         return data
 
     def create(self, validated_data):
-        validated_data.pop('password_confirm')
         password = validated_data.pop('password')
+        validated_data.pop('password_confirm')
+        user_type = validated_data.pop('user_type')
         user = User.objects.create_user(**validated_data)
         user.set_password(password)
         user.save()
+        UserProfile.objects.create(
+            user=user,
+            user_type=user_type,
+            phone='',
+            avatar=None,
+            location='',
+            rating=0
+        )
+        token, created = Token.objects.get_or_create(user=user)
+        user.token = token.key
         return user
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        ordered_data = {}
+        ordered_data['id'] = data['id']
+        ordered_data['username'] = data['username']
+        ordered_data['email'] = data['email']
+        ordered_data['first_name'] = data['first_name']
+        ordered_data['last_name'] = data['last_name']
+        try:
+            ordered_data['user_type'] = instance.profile.user_type
+        except:
+            ordered_data['user_type'] = None
+        ordered_data['token'] = getattr(instance, 'token', None)
+        return ordered_data
 
 
 class UserProfileSerializer(serializers.Serializer):

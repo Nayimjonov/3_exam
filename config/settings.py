@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'reviews',
     'users',
     'vehicles',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
