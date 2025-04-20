@@ -13,9 +13,11 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.messages',  # ✅ Исправлено
+    'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
+    'rest_framework_simplejwt',
     'cars',
     'dealers',
     'images',
@@ -25,7 +27,7 @@ INSTALLED_APPS = [
     'reviews',
     'users',
     'vehicles',
-    'rest_framework.authtoken',
+
 ]
 
 MIDDLEWARE = [
