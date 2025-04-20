@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'price_histories',
     'reviews',
     'users',
-
+    'vehicles',
 ]
 
 MIDDLEWARE = [
