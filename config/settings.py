@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'dealers',
     'images',
     'listings',
+    'messages',
 
 ]
 
