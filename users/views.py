@@ -16,13 +16,8 @@ class UserCreateView(generics.CreateAPIView):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
-        # Tokenlarni olish
         response = super().post(request, *args, **kwargs)
-
-        # Foydalanuvchi ma'lumotlarini olish
         user = User.objects.get(username=request.data['username'])
-
-        # Yangi javobni yaratish
         data = response.data
         data['user'] = {
             "id": user.id,
@@ -32,5 +27,4 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             "last_name": user.last_name,
             "user_type": user.profile.user_type if hasattr(user, 'profile') else None,
         }
-
-        return Response(data, status=200)
+        return Response(data)
