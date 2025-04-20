@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-from listings.models import Listing  # Импорт модели Listing
+from listings.models import Listing
+
 
 class Review(models.Model):
     reviewer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews_written')
