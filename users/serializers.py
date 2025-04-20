@@ -7,16 +7,33 @@ from rest_framework.authtoken.models import Token
 User = get_user_model()
 
 
-class RegisterSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    username = serializers.CharField()
-    email = serializers.EmailField()
-    password = serializers.CharField(write_only=True)
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ('id', 'user', 'user_type', 'phone', 'avatar', 'location', 'rating', 'created_at')
+        read_only_fields = ('id', 'created_at')
+
+
+class RegisterSerializer(serializers.ModelSerializer):
     password_confirm = serializers.CharField(write_only=True)
-    first_name = serializers.CharField()
-    last_name = serializers.CharField()
     user_type = serializers.ChoiceField(choices=UserProfile.CHOICES_USER_TYPE, write_only=True)
     token = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = (
+            'id',
+            'username',
+            'email',
+            'password',
+            'password_confirm',
+            'first_name',
+            'last_name',
+            'user_type',
+            'token'
+        )
+        read_only_fields = ('id', 'token')
+        extra_kwargs = {'password': {'write_only': True}}
 
     def validate(self, data):
         if data['password'] != data['password_confirm']:
@@ -44,39 +61,8 @@ class RegisterSerializer(serializers.Serializer):
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        ordered_data = {}
-        ordered_data['id'] = data['id']
-        ordered_data['username'] = data['username']
-        ordered_data['email'] = data['email']
-        ordered_data['first_name'] = data['first_name']
-        ordered_data['last_name'] = data['last_name']
         try:
-            ordered_data['user_type'] = instance.profile.user_type
+            data['user_type'] = instance.profile.user_type
         except:
-            ordered_data['user_type'] = None
-        ordered_data['token'] = getattr(instance, 'token', None)
-        return ordered_data
-
-
-class UserProfileSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
-    user_type = serializers.ChoiceField(choices=UserProfile.CHOICES_USER_TYPE)
-    phone = serializers.CharField(max_length=13)
-    avatar = serializers.ImageField()
-    location = serializers.CharField(max_length=255)
-    rating = serializers.FloatField()
-    created_at = serializers.DateTimeField(read_only=True)
-
-    def create(self, validated_data):
-        return UserProfile.objects.create(**validated_data)
-
-    def update(self, instance, validated_data):
-        instance.user = validated_data.get('user', instance.user)
-        instance.user_type = validated_data.get('user_type', instance.user_type)
-        instance.phone = validated_data.get('phone', instance.phone)
-        instance.avatar = validated_data.get('avatar', instance.avatar)
-        instance.location = validated_data.get('location', instance.location)
-        instance.rating = validated_data.get('rating', instance.rating)
-        instance.save()
-        return instance
+            data['user_type'] = None
+        return data
