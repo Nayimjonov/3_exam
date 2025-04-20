@@ -9,15 +9,6 @@ class DealerAdmin(admin.ModelAdmin):
     list_editable = ('is_verified', 'rating')
     readonly_fields = ('logo',)
 
-    fieldsets = (
-        (None, {
-            'fields': ('user', 'company_name', 'description', 'logo', 'website', 'address', 'is_verified', 'rating')
-        }),
-        ('Timestamp', {
-            'fields': ('created_at', 'updated_at'),
-            'classes': ('collapse',)
-        }),
-    )
 
     def logo_preview(self, obj):
         if obj.logo:
