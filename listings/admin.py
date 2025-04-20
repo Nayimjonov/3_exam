@@ -9,4 +9,3 @@ class ListingAdmin(admin.ModelAdmin):
     list_editable = ('is_active', 'is_featured')
     readonly_fields = ('created_at', 'updated_at')
 
-    filter_horizontal = ('car',)
