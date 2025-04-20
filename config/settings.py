@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'listings',
     'messages',
     'price_histories',
+    'reviews',
 
 ]
 
