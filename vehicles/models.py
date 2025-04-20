@@ -6,7 +6,7 @@ class Make(models.Model):
     country = models.CharField(max_length=100)
     logo = models.ImageField(upload_to='logos/')
 
-class CarModel(models.Model):
+class Model(models.Model):
     make = models.ForeignKey(Make, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
 
@@ -21,7 +21,7 @@ class Feature(models.Model):
 class Listing(models.Model):
     title = models.CharField(max_length=200)
     make = models.ForeignKey(Make, on_delete=models.CASCADE)
-    model = models.ForeignKey(CarModel, on_delete=models.CASCADE)
+    model = models.ForeignKey(Model, on_delete=models.CASCADE)
     body_type = models.ForeignKey(BodyType, on_delete=models.SET_NULL, null=True, blank=True)
     features = models.ManyToManyField(Feature, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
