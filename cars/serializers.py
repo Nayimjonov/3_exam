@@ -14,6 +14,8 @@ class CarModelSerializer(serializers.Serializer):
 
 
 class CarBodyTypeSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(read_only=True)
 
 
 class CarSerializer(serializers.ModelSerializer):
