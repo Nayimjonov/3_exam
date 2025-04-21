@@ -14,6 +14,14 @@ class UserProfileSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'created_at')
 
 
+class UserSerializer(serializers.ModelSerializer):
+    profile = UserProfileSerializer(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'profile']
+
+
 class RegisterSerializer(serializers.ModelSerializer):
     password_confirm = serializers.CharField(write_only=True)
     user_type = serializers.ChoiceField(choices=UserProfile.CHOICES_USER_TYPE, write_only=True)
@@ -66,3 +74,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         except:
             data['user_type'] = None
         return data
+
+
+
+
+
