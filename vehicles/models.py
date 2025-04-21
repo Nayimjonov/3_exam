@@ -6,17 +6,29 @@ class Make(models.Model):
     country = models.CharField(max_length=100)
     logo = models.ImageField(upload_to='logos/')
 
+    def __str__(self):
+        return self.name
+
 class Model(models.Model):
     make = models.ForeignKey(Make, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 class BodyType(models.Model):
     name = models.CharField(max_length=50)
     image = models.ImageField(upload_to='body_types/')
 
+    def __str__(self):
+        return self.name
+
 class Feature(models.Model):
     name = models.CharField(max_length=100)
     category = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 class Listing(models.Model):
     title = models.CharField(max_length=200)
@@ -28,10 +40,19 @@ class Listing(models.Model):
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.title
+
 class SavedListing(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.user.username
+
 class ComparisonList(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE )
     listings = models.ManyToManyField(Listing)
+
+    def __str__(self):
+        return self.user.username

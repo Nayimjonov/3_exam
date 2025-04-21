@@ -4,6 +4,7 @@ from core.paginations import DealerPagination
 from .models import Dealer
 from .serializers import DealerSerializer, DealerCreateSerializer, ListingSerializer
 from listings.models import Listing
+from rest_framework.exceptions import NotFound
 
 
 class DealerListCreateView(generics.ListCreateAPIView):
@@ -27,13 +28,18 @@ class DealerRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = DealerSerializer
 
 
-class DealerListingView(generics.ListAPIView):
+class DealerListingsView(generics.ListAPIView):
     serializer_class = ListingSerializer
+    pagination_class = DealerPagination
 
     def get_queryset(self):
         dealer_id = self.kwargs['dealer_id']
-        dealer = Dealer.objects.get(id=dealer_id)
-        return Listing.objects.filter(dealer=dealer)
+        try:
+            dealer = Dealer.objects.get(id=dealer_id)
+        except Dealer.DoesNotExist:
+            raise NotFound(detail="Dealer not found")
+
+        return Listing.objects.filter(seller=dealer.user)
 
 
 

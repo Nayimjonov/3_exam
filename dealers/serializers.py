@@ -47,35 +47,36 @@ class DealerCreateSerializer(serializers.ModelSerializer):
         return Dealer.objects.create(user=user, **validated_data)
 
 # dealer/<id>/listing
+class CarMakeSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(read_only=True)
+
+class CarModelSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(read_only=True)
+
 class CarSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    make = serializers.CharField(max_length=100)
-    model = serializers.CharField(max_length=100)
+    make = CarMakeSerializer(read_only=True)
+    model = CarModelSerializer(read_only=True)
     year = serializers.IntegerField()
+
 
 class ListingSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    title = serializers.CharField(max_length=200)
-    price = serializers.DecimalField(max_digits=10, decimal_places=2)
-    currency = serializers.CharField(max_length=10)
+    title = serializers.CharField(max_length=255)
+    price = serializers.DecimalField(max_digits=12, decimal_places=2)
+    currency = serializers.CharField(max_length=3)
     location = serializers.CharField(max_length=100)
-    condition = serializers.CharField(max_length=50)
+    condition = serializers.CharField(max_length=10)
     is_negotiable = serializers.BooleanField()
     is_active = serializers.BooleanField()
     is_featured = serializers.BooleanField()
     views_count = serializers.IntegerField()
     created_at = serializers.DateTimeField()
     car = CarSerializer()
-    primary_image = serializers.ImageField()
+    primary_image = serializers.SerializerMethodField()
 
-class DealerListingSerializer(serializers.Serializer):
-    user = serializers.StringRelatedField()
-    company_name = serializers.CharField(max_length=200)
-    description = serializers.CharField()
-    logo = serializers.ImageField()
-    website = serializers.URLField()
-    address = serializers.CharField()
-    is_verified = serializers.BooleanField()
-    rating = serializers.FloatField()
-    listings = ListingSerializer(many=True)
+    def get_primary_image(self, obj):
+        return obj.primary_image.url if obj.primary_image else None
 

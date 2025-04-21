@@ -29,6 +29,8 @@ class Listing(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     expires_at = models.DateTimeField()
+    primary_image = models.ImageField(upload_to='listings/images/', null=True, blank=True)
+
 
     def __str__(self):
         return self.title
