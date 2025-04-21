@@ -2,6 +2,18 @@ from rest_framework import serializers
 from .models import Car
 
 
+class CarMakeSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(read_only=True)
+    country = serializers.CharField(read_only=True)
+
+
+class CarModelSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(read_only=True)
+
+
+class
 
 
 class CarSerializer(serializers.ModelSerializer):
