@@ -12,3 +12,9 @@ class CarListCreateView(generics.ListCreateAPIView):
         if self.request.method == 'POST':
             return CarCreateSerializer
         return CarListSerializer
+
+
+class CarRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Car.objects.all()
+    serializer_class = CarCreateSerializer
+
