@@ -7,7 +7,6 @@ class DealerAdmin(admin.ModelAdmin):
     search_fields = ('user__username', 'company_name')
     list_filter = ('is_verified', 'rating')
     list_editable = ('is_verified', 'rating')
-    readonly_fields = ('logo',)
 
 
     def logo_preview(self, obj):
