@@ -6,5 +6,6 @@ urlpatterns = [
     path('dealers/', views.DealerListCreateView.as_view(), name='dealer-list-create'),
     path('dealers/<int:pk>/', views.DealerRetrieveUpdateDestroyView.as_view(), name='dealer-detail'),
     path('dealers/<int:dealer_id>/listings/', views.DealerListingsView.as_view(), name='dealer-listings'),
+    path('dealers/<int:dealer_pk>/reviews/', views.DealerReviewList.as_view(), name='dealer-review-list'),
 
 ]

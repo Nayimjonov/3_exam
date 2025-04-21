@@ -17,10 +17,3 @@ class Dealer(models.Model):
     def __str__(self):
         return self.user.username
 
-    def update_rating(self):
-        reviews = self.reviews.all()
-        if reviews:
-            self.rating = sum(review.rating for review in reviews) / reviews.count()
-        else:
-            self.rating = 0.0
-        self.save()

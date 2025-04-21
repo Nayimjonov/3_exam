@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Dealer
+from reviews.models import Review
 
 
 class DealerUserSerializer(serializers.Serializer):
@@ -80,3 +81,48 @@ class ListingSerializer(serializers.Serializer):
     def get_primary_image(self, obj):
         return obj.primary_image.url if obj.primary_image else None
 
+# dealer/<id>/reviews/
+class ReviewUserSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    username = serializers.CharField(read_only=True)
+    first_name = serializers.CharField(read_only=True)
+    last_name = serializers.CharField(read_only=True)
+
+
+class DealerReviewSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    reviewer = ReviewUserSerializer(read_only=True)
+    rating = serializers.IntegerField(min_value=1, max_value=5)
+    comment = serializers.CharField()
+    created_at = serializers.DateTimeField(read_only=True)
+
+    def create(self, validated_data):
+        dealer = self.context['dealer']
+        user = self.context['request'].user
+
+        if not user.is_authenticated:
+            raise serializers.ValidationError("Authentication required to create a review")
+
+        from listings.models import Listing
+        default_listing = Listing.objects.first()  # Get the first listing or create one
+        if not default_listing:
+            default_listing = Listing.objects.create(
+                title="Default Listing",
+                seller=dealer.user,
+            )
+
+        review = Review(
+            reviewer=user,
+            reviewed_user=dealer.user,
+            listing=default_listing,
+            rating=validated_data['rating'],
+            comment=validated_data['comment']
+        )
+        review.save()
+        return review
+
+    def update(self, instance, validated_data):
+        instance.rating = validated_data.get('rating', instance.rating)
+        instance.comment = validated_data.get('comment', instance.comment)
+        instance.save()
+        return instance
