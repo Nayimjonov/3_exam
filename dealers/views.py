@@ -34,6 +34,7 @@ class DealerRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = DealerSerializer
 
 
+#dealer/<pk>/listings/
 class DealerListingsView(generics.ListAPIView):
     serializer_class = ListingSerializer
     pagination_class = DealerPagination
@@ -48,13 +49,7 @@ class DealerListingsView(generics.ListAPIView):
         return Listing.objects.filter(seller=dealer.user)
 
 
-
-
-
-
-
-
-
+#dealer/<pk>/reviews/
 class DealerReviewList(generics.ListCreateAPIView):
     serializer_class = DealerReviewSerializer
     pagination_class = ResultPagination
