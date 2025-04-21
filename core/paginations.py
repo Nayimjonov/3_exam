@@ -10,3 +10,6 @@ class ResultPagination(PageNumberPagination):
 class CarPagination(PageNumberPagination):
     page_size = 20
 
+class MakePagination(PageNumberPagination):
+    page_size = 20
+
