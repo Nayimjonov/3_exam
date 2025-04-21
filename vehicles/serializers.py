@@ -30,3 +30,9 @@ class BodyTypeSerializer(serializers.Serializer):
     image = serializers.CharField(read_only=True)
 
 
+class FeatureSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(read_only=True)
+    category = serializers.CharField(read_only=True)
+
+
