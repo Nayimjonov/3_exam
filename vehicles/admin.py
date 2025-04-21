@@ -19,7 +19,7 @@ class BodyTypeAdmin(admin.ModelAdmin):
 
 @admin.register(Feature)
 class FeatureAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category')
+    list_display = ('id', 'name', 'category')
     search_fields = ('name', 'category')
 
 @admin.register(Listing)

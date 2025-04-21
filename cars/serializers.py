@@ -18,33 +18,29 @@ class CarBodyTypeSerializer(serializers.Serializer):
     name = serializers.CharField(read_only=True)
 
 
+class CarFeatureSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(read_only=True)
+    category = serializers.CharField(read_only=True)
+
+
 class CarSerializer(serializers.ModelSerializer):
+    make = CarMakeSerializer()
+    model = CarModelSerializer()
+    body_type = CarBodyTypeSerializer()
+    features = CarFeatureSerializer(many=True, read_only=True)
+
     class Meta:
         model = Car
         fields = (
-            'id',
-            'make',
-            'model',
-            'year',
-            'body_type',
-            'fuel_type',
-            'transmission',
-            'color',
-            'mileage',
-            'engine_size',
-            'power',
-            'drive_type',
-            'vin',
-            'created_at',
-            'updated_at'
+            'id', 'make', 'model', 'year', 'body_type', 'fuel_type', 'transmission',
+            'color', 'mileage', 'engine_size', 'power', 'drive_type', 'vin',
+            'created_at', 'updated_at', 'features'
         )
 
     def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        representation['make'] = CarMakeSerializer(instance.make).data
-        representation['model'] = CarModelSerializer(instance.model).data
-        representation['body_type'] = CarBodyTypeSerializer(instance.body_type).data
-        return representation
-
-
+        rep = super().to_representation(instance)
+        if hasattr(instance, 'features') and self.context.get('view') and self.context['view'].action == 'create':
+            rep['features'] = CarFeatureSerializer(instance.features.all(), many=True).data
+        return rep
 
