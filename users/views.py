@@ -7,7 +7,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from users.serializers import RegisterSerializer
+from .serializers import RegisterSerializer, UserSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 
@@ -56,3 +56,11 @@ class UserLogoutView(APIView):
                 'detail': "Token invalid"
             }, status=400)
         return Response(status=204)
+
+
+class UserProfileView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    # permission_classes = [IsAuthenticated]
+
+
