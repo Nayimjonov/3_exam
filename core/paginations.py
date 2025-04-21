@@ -7,3 +7,6 @@ class DealerPagination(PageNumberPagination):
 class ResultPagination(PageNumberPagination):
     page_size = 20
 
+class CarPagination(PageNumberPagination):
+    page_size = 20
+
