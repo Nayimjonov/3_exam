@@ -40,4 +40,3 @@ class CarSerializer(serializers.ModelSerializer):
         )
 
 
-
