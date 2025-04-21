@@ -20,3 +20,18 @@ class DealerListCreateView(generics.ListCreateAPIView):
         if self.request.method == 'POST':
             return DealerCreateSerializer
         return DealerSerializer
+
+
+class DealerRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Dealer.objects.all()
+    serializer_class = DealerSerializer
+
+
+
+
+
+
+
+
+
+
