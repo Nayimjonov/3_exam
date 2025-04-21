@@ -38,6 +38,13 @@ class CarSerializer(serializers.ModelSerializer):
             'created_at',
             'updated_at'
         )
+
     def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['make'] = CarMakeSerializer(instance.make).data
+        representation['model'] = CarModelSerializer(instance.model).data
+        representation['body_type'] = CarBodyTypeSerializer(instance.body_type).data
+        return representation
+
 
 
