@@ -20,4 +20,12 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('users.urls')),
+    path('api/', include('dealers.urls')),
+    path('api/', include('cars.urls')),
+    path('api/', include('images.urls')),
+    path('api/', include('listings.urls')),
+    path('api/', include('price_histories.urls')),
+    path('api/', include('reviews.urls')),
+    path('api/', include('user_messages.urls')),
+    path('api/', include('vehicles.urls')),
 ]

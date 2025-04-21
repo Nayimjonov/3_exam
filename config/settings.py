@@ -22,7 +22,7 @@ INSTALLED_APPS = [
     'dealers',
     'images',
     'listings',
-    'user_messages',  # ✅ Это твое приложение, оставляем
+    'user_messages',
     'price_histories',
     'reviews',
     'users',
@@ -51,7 +51,7 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',  # ✅ Исправлено
+                'django.contrib.messages.context_processors.messages',
             ],
         },
     },
@@ -89,3 +89,10 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
