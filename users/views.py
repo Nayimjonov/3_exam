@@ -1,7 +1,12 @@
+from tokenize import TokenError
+
 from rest_framework import generics
+from rest_framework.views import APIView
 from django.contrib.auth import get_user_model
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
+
 from users.serializers import RegisterSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
@@ -35,3 +40,19 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         return super().get_permissions()
 
 
+class UserLogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        refresh_token = request.data.get('refresh')
+        if not refresh_token:
+            return Response({
+                'detail': "Refresh token is required"
+            }, status=400)
+        try:
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+        except TokenError:
+            return Response({
+                'detail': "Token invalid"
+            }, status=400)
+        return Response(status=204)
