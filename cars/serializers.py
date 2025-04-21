@@ -13,7 +13,7 @@ class CarModelSerializer(serializers.Serializer):
     name = serializers.CharField(read_only=True)
 
 
-class
+class CarBodyTypeSerializer(serializers.Serializer):
 
 
 class CarSerializer(serializers.ModelSerializer):
