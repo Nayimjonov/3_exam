@@ -23,3 +23,4 @@ class ModelSerializer(serializers.Serializer):
         instance.save()
         return instance
 
+
