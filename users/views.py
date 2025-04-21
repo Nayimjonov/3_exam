@@ -1,5 +1,6 @@
 from rest_framework import generics
 from django.contrib.auth import get_user_model
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from users.serializers import RegisterSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -10,6 +11,7 @@ User = get_user_model()
 class UserCreateView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
+    pagination_class = [AllowAny]
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -26,3 +28,10 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             "user_type": user.profile.user_type if hasattr(user, 'profile') else None,
         }
         return Response(data)
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [AllowAny()]
+        return super().get_permissions()
+
+
