@@ -13,3 +13,9 @@ class CarPagination(PageNumberPagination):
 class MakePagination(PageNumberPagination):
     page_size = 20
 
+class BodyTypePagination(PageNumberPagination):
+    page_size = 20
+
+class FeaturePagination(PageNumberPagination):
+    page_size = 20
+

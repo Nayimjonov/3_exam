@@ -1,7 +1,7 @@
 from rest_framework import generics
-from .models import Make, Model
-from .serializers import MakeSerializer, ModelSerializer
-from core.paginations import MakePagination
+from .models import Make, Model, BodyType, Feature
+from .serializers import MakeSerializer, ModelSerializer, BodyTypeSerializer, FeatureSerializer
+from core.paginations import MakePagination, BodyTypePagination, FeaturePagination
 
 
 class MakeListView(generics.ListAPIView):
@@ -17,3 +17,14 @@ class ModelListByMakeView(generics.ListAPIView):
     def get_queryset(self):
         make_id = self.kwargs.get('make_id')
         return Model.objects.filter(make_id=make_id)
+
+
+class BodyTypeListView(generics.ListAPIView):
+    queryset = BodyType
+    serializer_class = BodyTypeSerializer
+    pagination_class = BodyTypePagination
+
+class FeatureListView(generics.ListAPIView):
+    queryset = Feature
+    serializer_class = FeatureSerializer
+    pagination_class = FeaturePagination
