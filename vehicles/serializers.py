@@ -24,3 +24,9 @@ class ModelSerializer(serializers.Serializer):
         return instance
 
 
+class BodyTypeSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(read_only=True)
+    image = serializers.CharField(read_only=True)
+
+
