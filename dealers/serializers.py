@@ -47,3 +47,5 @@ class DealerCreateSerializer(serializers.ModelSerializer):
         return Dealer.objects.create(user=user, **validated_data)
 
 
+
+
