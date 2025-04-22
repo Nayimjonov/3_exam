@@ -6,9 +6,11 @@ class ListingCarMakeSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(read_only=True)
 
+
 class ListingCarModelSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(read_only=True)
+
 
 class ListingCarBodyTypeSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
