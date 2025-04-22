@@ -19,3 +19,6 @@ class BodyTypePagination(PageNumberPagination):
 class FeaturePagination(PageNumberPagination):
     page_size = 20
 
+class ListingPagination(PageNumberPagination):
+    page_size = 20
+
