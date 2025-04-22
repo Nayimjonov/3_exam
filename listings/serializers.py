@@ -84,3 +84,11 @@ class ListingSerializer(serializers.ModelSerializer):
 
         validated_data['expires_at'] = timezone.now() + timedelta(days=90)
         return super().create(validated_data)
+
+
+class ListingDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Listing
+        fields = (
+
+        )
