@@ -28,6 +28,12 @@ class ListingCarSerializer(serializers.Serializer):
     color = serializers.CharField(read_only=True)
     mileage = serializers.CharField(read_only=True)
 
+class ListingSellerSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    username = serializers.CharField(read_only=True)
+    first_name = serializers.CharField(read_only=True)
+    last_name = serializers.CharField(read_only=True)
+    user_type = serializers.CharField(read_only=True)
 
 class ListingSerializer(serializers.ModelSerializer):
     images_count = serializers.SerializerMethodField()
@@ -60,5 +66,6 @@ class ListingSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['car'] = ListingCarSerializer(instance.car).data
+        representation['seller'] = ListingSellerSerializer(instance.seller).data
         return representation
 
