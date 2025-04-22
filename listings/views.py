@@ -15,3 +15,7 @@ class ListingListCreateView(generics.ListCreateAPIView):
         if self.request.method == 'POST':
             return [IsAuthenticated()]
         return [AllowAny]
+
+
+class ListingRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Listing.objects.all()
