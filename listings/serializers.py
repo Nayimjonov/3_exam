@@ -86,9 +86,54 @@ class ListingSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
+# DETAIL
+class ListingCarDetailMakeSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(read_only=True)
+    country = serializers.CharField(read_only=True)
+
+class ListingCarDetailSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    make = ListingCarDetailMakeSerializer(read_only=True)
+    model = ListingCarModelSerializer(read_only=True)
+    year = serializers.IntegerField(read_only=True)
+    body_type = ListingCarBodyTypeSerializer(read_only=True)
+
+
+
 class ListingDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Listing
         fields = (
-
+            'id',
+            'title',
+            'description',
+            'price',
+            'currency',
+            'location',
+            'condition',
+            'is_negotiable',
+            'is_active',
+            'is_featured',
+            'views_count',
+            'created_at',
+            'updated_at',
+            'expires_at',
+            'car',
+            'fuel_type',
+            'transmission',
+            'color',
+            'mileage',
+            'engine_size',
+            'power',
+            'drive_type',
+            'features',
+            'seller',
+            'images',
+            'similar_listings'
         )
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['car'] = ListingCarDetailSerializer(instance.car).data
+        return representation
