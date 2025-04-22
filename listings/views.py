@@ -2,7 +2,7 @@ from  rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from .models import Listing
-from .serializers import ListingSerializer
+from .serializers import ListingSerializer, ListingDetailSerializer
 from core.paginations import ListingPagination
 
 
@@ -19,3 +19,5 @@ class ListingListCreateView(generics.ListCreateAPIView):
 
 class ListingRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Listing.objects.all()
+    serializer_class = ListingDetailSerializer
+    
