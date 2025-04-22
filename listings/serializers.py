@@ -23,6 +23,10 @@ class ListingCarSerializer(serializers.Serializer):
     model = ListingCarModelSerializer(read_only=True)
     year = serializers.IntegerField(read_only=True)
     body_type = ListingCarBodyTypeSerializer(read_only=True)
+    fuel_type = serializers.CharField(read_only=True)
+    transmission = serializers.CharField(read_only=True)
+    color = serializers.CharField(read_only=True)
+    mileage = serializers.CharField(read_only=True)
 
 
 class ListingSerializer(serializers.ModelSerializer):
