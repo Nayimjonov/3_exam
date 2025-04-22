@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from .models import Listing
+from datetime import timedelta
+from django.utils import timezone
+from .models import Listing, Car
 
 
 class ListingCarMakeSerializer(serializers.Serializer):
@@ -17,7 +19,7 @@ class ListingCarBodyTypeSerializer(serializers.Serializer):
     name = serializers.CharField(read_only=True)
 
 
-class ListingCarSerializer(serializers.Serializer):
+class ListingCarReadSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     make = ListingCarMakeSerializer(read_only=True)
     model = ListingCarModelSerializer(read_only=True)
@@ -26,7 +28,8 @@ class ListingCarSerializer(serializers.Serializer):
     fuel_type = serializers.CharField(read_only=True)
     transmission = serializers.CharField(read_only=True)
     color = serializers.CharField(read_only=True)
-    mileage = serializers.CharField(read_only=True)
+    mileage = serializers.IntegerField(read_only=True)
+
 
 class ListingSellerSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
@@ -35,8 +38,13 @@ class ListingSellerSerializer(serializers.Serializer):
     last_name = serializers.CharField(read_only=True)
     user_type = serializers.CharField(read_only=True)
 
+
 class ListingSerializer(serializers.ModelSerializer):
     images_count = serializers.SerializerMethodField()
+    car = serializers.PrimaryKeyRelatedField(queryset=Car.objects.all(), write_only=True)
+    seller = ListingSellerSerializer(read_only=True)
+    primary_image = serializers.ImageField(required=False, allow_null=True)
+    expires_at = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = Listing
@@ -50,6 +58,7 @@ class ListingSerializer(serializers.ModelSerializer):
             'condition',
             'is_negotiable',
             'is_active',
+            'is_featured',
             'views_count',
             'created_at',
             'updated_at',
@@ -57,7 +66,7 @@ class ListingSerializer(serializers.ModelSerializer):
             'car',
             'seller',
             'primary_image',
-            'images_count'
+            'images_count',
         )
 
     def get_images_count(self, obj):
@@ -65,7 +74,13 @@ class ListingSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation['car'] = ListingCarSerializer(instance.car).data
-        representation['seller'] = ListingSellerSerializer(instance.seller).data
+        representation['car'] = ListingCarReadSerializer(instance.car).data
         return representation
 
+    def create(self, validated_data):
+        request = self.context.get('request')
+        if request and hasattr(request, 'user'):
+            validated_data['seller'] = request.user
+
+        validated_data['expires_at'] = timezone.now() + timedelta(days=90)
+        return super().create(validated_data)
