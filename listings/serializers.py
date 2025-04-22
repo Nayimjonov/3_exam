@@ -99,6 +99,43 @@ class ListingCarDetailSerializer(serializers.Serializer):
     year = serializers.IntegerField(read_only=True)
     body_type = ListingCarBodyTypeSerializer(read_only=True)
 
+class ListingFeaturesSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(read_only=True)
+    category = serializers.CharField(read_only=True)
+    vin = serializers.CharField(read_only=True)
+
+class ListingSellerProfileSerializer(serializers.Serializer):
+    phone = serializers.CharField(read_only=True)
+    location = serializers.CharField(read_only=True)
+    rating = serializers.FloatField(read_only=True)
+
+class ListingSellerDealerSerializer(serializers.Serializer):
+    company_name = serializers.CharField(read_only=True)
+    is_verified = serializers.BooleanField(read_only=True)
+
+
+class ListingSellerDetailSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    username = serializers.CharField(read_only=True)
+    first_name = serializers.CharField(read_only=True)
+    last_name = serializers.CharField(read_only=True)
+    user_type = serializers.CharField(read_only=True)
+    profile = ListingSellerProfileSerializer(read_only=True)
+    dealer = ListingSellerDealerSerializer(read_only=True)
+
+class ListingImagesSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    image = serializers.ImageField(read_only=True)
+    is_primary = serializers.BooleanField(read_only=True)
+    order = serializers.IntegerField(read_only=True)
+
+class SimilarListingsSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    title = serializers.CharField(read_only=True)
+    price = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
+    currency = serializers.CharField(read_only=True)
+    primary_image = serializers.ImageField(read_only=True)
 
 
 class ListingDetailSerializer(serializers.ModelSerializer):
@@ -133,7 +170,12 @@ class ListingDetailSerializer(serializers.ModelSerializer):
             'similar_listings'
         )
 
+
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['car'] = ListingCarDetailSerializer(instance.car).data
+        representation['seller'] = ListingSellerDetailSerializer(instance.seller).data
+        representation['images'] = ListingImagesSerializer(instance.images.all(), many=True).data
+        representation['similar_listings'] = SimilarListingsSerializer(instance.similar_listings.all(), many=True).data
+        representation['features'] = ListingFeaturesSerializer(instance.features.all(), many=True).data
         return representation
