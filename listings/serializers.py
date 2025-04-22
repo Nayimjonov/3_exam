@@ -21,11 +21,13 @@ class ListingCarSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     make = ListingCarMakeSerializer(read_only=True)
     model = ListingCarModelSerializer(read_only=True)
-    year = serializers.DateField(read_only=True)
+    year = serializers.IntegerField(read_only=True)
     body_type = ListingCarBodyTypeSerializer(read_only=True)
 
 
 class ListingSerializer(serializers.ModelSerializer):
+    images_count = serializers.SerializerMethodField()
+
     class Meta:
         model = Listing
         fields = (
@@ -47,6 +49,9 @@ class ListingSerializer(serializers.ModelSerializer):
             'primary_image',
             'images_count'
         )
+
+    def get_images_count(self, obj):
+        return 1 if obj.primary_image else 0
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
