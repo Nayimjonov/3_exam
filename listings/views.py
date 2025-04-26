@@ -27,10 +27,6 @@ class ListingRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ListingImagesView(generics.ListCreateAPIView):
-    """
-    GET: List all images for a listing
-    POST: Add a new image to a listing
-    """
     serializer_class = ImageSerializer
     parser_classes = [MultiPartParser, FormParser]
 
@@ -50,9 +46,6 @@ class ListingImagesView(generics.ListCreateAPIView):
 
 
 class ListingImageDeleteView(generics.DestroyAPIView):
-    """
-    DELETE: Remove an image from a listing
-    """
     permission_classes = [permissions.IsAuthenticated, IsListingOwner]
 
     def get_queryset(self):
@@ -86,9 +79,6 @@ class ListingImageDeleteView(generics.DestroyAPIView):
 
 
 class ListingPriceHistoryView(generics.ListAPIView):
-    """
-    GET: Retrieve price history for a listing
-    """
     serializer_class = PriceHistorySerializer
     permission_classes = [permissions.AllowAny]
 
@@ -98,9 +88,6 @@ class ListingPriceHistoryView(generics.ListAPIView):
 
 
 class FeaturedListingsView(generics.ListAPIView):
-    """
-    GET: Retrieve all featured listings
-    """
     serializer_class = ListingSerializer
     permission_classes = [permissions.AllowAny]
     pagination_class = ListingPagination
@@ -114,9 +101,6 @@ class FeaturedListingsView(generics.ListAPIView):
 
 
 class MyListingsView(generics.ListAPIView):
-    """
-    GET: Retrieve all listings belonging to the authenticated user
-    """
     serializer_class = ListingSerializer
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = ListingPagination
