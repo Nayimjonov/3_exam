@@ -179,3 +179,34 @@ class ListingDetailSerializer(serializers.ModelSerializer):
         representation['similar_listings'] = SimilarListingsSerializer(instance.similar_listings.all(), many=True).data
         representation['features'] = ListingFeaturesSerializer(instance.features.all(), many=True).data
         return representation
+
+
+class ListingImagesSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(required=True)
+    is_primary = serializers.BooleanField(default=False)
+    order = serializers.IntegerField(default=0)
+
+    class Meta:
+        model = ListingImage
+        fields = ['id', 'image', 'is_primary', 'order', 'created_at']
+        read_only_fields = ['id', 'created_at']
+
+    def create(self, validated_data):
+        listing = validated_data.get('listing')
+        is_primary = validated_data.get('is_primary', False)
+
+        image = ListingImage.objects.create(**validated_data)
+
+        if is_primary:
+            ListingImage.objects.filter(listing=listing, is_primary=True).exclude(id=image.id).update(is_primary=False)
+            listing.primary_image = image.image
+            listing.save(update_fields=['primary_image'])
+
+        return image
+
+
+class PriceHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PriceHistory
+        fields = ['id', 'price', 'currency', 'created_at']
+        read_only_fields = ['id', 'created_at']
