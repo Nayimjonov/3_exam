@@ -2,6 +2,8 @@ from rest_framework import serializers
 from datetime import timedelta
 from django.utils import timezone
 from .models import Listing, Car
+from images.models import Image
+from price_histories.models import PriceHistory
 
 
 class ListingCarMakeSerializer(serializers.Serializer):
@@ -188,7 +190,7 @@ class ImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Image
-        fields = ['id', 'image', 'is_primary', 'order', 'created_at']
+        fields = ('id', 'image', 'is_primary', 'order', 'created_at')
         read_only_fields = ['id', 'created_at']
 
     def create(self, validated_data):
@@ -208,5 +210,5 @@ class ImageSerializer(serializers.ModelSerializer):
 class PriceHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = PriceHistory
-        fields = ['id', 'price', 'currency', 'created_at']
+        fields = ('id', 'price', 'currency', 'created_at')
         read_only_fields = ['id', 'created_at']
