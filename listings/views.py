@@ -1,6 +1,6 @@
 from  rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
-
+from .permissions import IsListingOwner
 from .models import Listing
 from .serializers import ListingSerializer, ListingDetailSerializer
 from core.paginations import ListingPagination
