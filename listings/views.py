@@ -55,9 +55,7 @@ class ListingImageDeleteView(generics.DestroyAPIView):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
 
-        # If deleting a primary image, try to set another image as primary
         if instance.is_primary:
-            # Find the next available image
             next_image = Image.objects.filter(
                 listing_id=self.kwargs.get('listing_id')
             ).exclude(id=instance.id).order_by('order').first()
@@ -66,11 +64,9 @@ class ListingImageDeleteView(generics.DestroyAPIView):
                 next_image.is_primary = True
                 next_image.save()
 
-                # Update listing's primary_image
                 instance.listing.primary_image = next_image.image
                 instance.listing.save(update_fields=['primary_image'])
             else:
-                # No other images, set primary_image to None
                 instance.listing.primary_image = None
                 instance.listing.save(update_fields=['primary_image'])
 
