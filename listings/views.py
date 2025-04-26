@@ -33,22 +33,27 @@ class ListingRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         return ListingDetailSerializer
 
 
-class ListingImagesView(generics.ListCreateAPIView):
+class ListingImagesListCreateView(generics.ListCreateAPIView):
     serializer_class = ImageSerializer
-    parser_classes = [MultiPartParser, FormParser]
+    parser_classes = (MultiPartParser, FormParser)
 
     def get_queryset(self):
         listing_id = self.kwargs.get('listing_id')
-        return Image.objects.filter(listing_id=listing_id).order_by('order')
+        return Image.objects.filter(listing_id=listing_id)
 
     def get_permissions(self):
         if self.request.method == 'POST':
-            return [IsAuthenticated(), IsListingOwner()]
+            return [IsListingOwner()]
         return [AllowAny()]
 
     def perform_create(self, serializer):
         listing_id = self.kwargs.get('listing_id')
         listing = get_object_or_404(Listing, id=listing_id)
+
+        # Check if the user is the owner of the listing
+        if listing.seller != self.request.user:
+            self.permission_denied(self.request)
+
         serializer.save(listing=listing)
 
 
