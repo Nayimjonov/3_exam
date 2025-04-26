@@ -1,13 +1,17 @@
-from  rest_framework import generics
+from  rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .permissions import IsListingOwner
+from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, FormParser
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from .models import Listing
-from .serializers import ListingSerializer, ListingDetailSerializer
-from core.paginations import ListingPagination
-
-from .serializers import ListingSerializer, ImageSerializer, PriceHistorySerializer
+from .serializers import ListingSerializer, ListingDetailSerializer, ImageSerializer, PriceHistorySerializer
 from .permissions import IsListingOwner
 from core.paginations import ListingPagination
+from images.models import Image
+from price_histories.models import PriceHistory
+
+
 
 class ListingListCreateView(generics.ListCreateAPIView):
     queryset = Listing.objects.all()
@@ -40,7 +44,7 @@ class ListingImagesView(generics.ListCreateAPIView):
     def get_permissions(self):
         if self.request.method == 'POST':
             return [IsAuthenticated(), IsListingOwner()]
-        return [permissions.AllowAny()]
+        return [AllowAny()]
 
     def perform_create(self, serializer):
         listing_id = self.kwargs.get('listing_id')
@@ -79,7 +83,7 @@ class ListingImageDeleteView(generics.DestroyAPIView):
 
 class ListingPriceHistoryView(generics.ListAPIView):
     serializer_class = PriceHistorySerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         listing_id = self.kwargs.get('listing_id')
@@ -88,7 +92,7 @@ class ListingPriceHistoryView(generics.ListAPIView):
 
 class FeaturedListingsView(generics.ListAPIView):
     serializer_class = ListingSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [AllowAny]
     pagination_class = ListingPagination
 
     def get_queryset(self):
@@ -101,7 +105,7 @@ class FeaturedListingsView(generics.ListAPIView):
 
 class MyListingsView(generics.ListAPIView):
     serializer_class = ListingSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     pagination_class = ListingPagination
 
     def get_queryset(self):
