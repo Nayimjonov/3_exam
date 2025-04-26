@@ -36,9 +36,6 @@ class ListingImagesListView(generics.ListAPIView):
 
 
 class ListingImagesCreateView(generics.CreateAPIView):
-    """
-    API endpoint to add a new image to a specific listing
-    """
     serializer_class = ListingImagesSerializer
     permission_classes = [IsListingOwner]
 
@@ -49,9 +46,6 @@ class ListingImagesCreateView(generics.CreateAPIView):
 
 
 class ListingImageDeleteView(generics.DestroyAPIView):
-    """
-    API endpoint to delete an image from a specific listing
-    """
     serializer_class = ListingImagesSerializer
     permission_classes = [IsListingOwner]
 
@@ -61,9 +55,6 @@ class ListingImageDeleteView(generics.DestroyAPIView):
 
 
 class ListingPriceHistoryView(generics.ListAPIView):
-    """
-    API endpoint to retrieve price history for a specific listing
-    """
     serializer_class = PriceHistorySerializer
     permission_classes = [permissions.AllowAny]
 
@@ -73,9 +64,6 @@ class ListingPriceHistoryView(generics.ListAPIView):
 
 
 class FeaturedListingsView(generics.ListAPIView):
-    """
-    API endpoint to retrieve all featured listings
-    """
     serializer_class = ListingSerializer
     permission_classes = [permissions.AllowAny]
     pagination_class = ListingPagination  # Assuming you have this defined
@@ -89,9 +77,6 @@ class FeaturedListingsView(generics.ListAPIView):
 
 
 class MyListingsView(generics.ListAPIView):
-    """
-    API endpoint to retrieve all listings belonging to the authenticated user
-    """
     serializer_class = ListingSerializer
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = ListingPagination  # Assuming you have this defined
