@@ -19,5 +19,11 @@ class ListingListCreateView(generics.ListCreateAPIView):
 
 class ListingRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Listing.objects.all()
-    serializer_class = ListingDetailSerializer
-    
+
+    def get_serializer_class(self):
+        if self.request.method == ['PUT', 'PATCH']:
+            return ListingSerializer
+        return ListingDetailSerializer
+
+
+
