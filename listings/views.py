@@ -56,7 +56,7 @@ class ListingImageDeleteView(generics.DestroyAPIView):
 
 class ListingPriceHistoryView(generics.ListAPIView):
     serializer_class = PriceHistorySerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         listing_id = self.kwargs.get('listing_id')
@@ -65,7 +65,7 @@ class ListingPriceHistoryView(generics.ListAPIView):
 
 class FeaturedListingsView(generics.ListAPIView):
     serializer_class = ListingSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [AllowAny]
     pagination_class = ListingPagination  # Assuming you have this defined
 
     def get_queryset(self):
