@@ -78,8 +78,8 @@ class FeaturedListingsView(generics.ListAPIView):
 
 class MyListingsView(generics.ListAPIView):
     serializer_class = ListingSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    pagination_class = ListingPagination  # Assuming you have this defined
+    permission_classes = [IsAuthenticated]
+    pagination_class = ListingPagination
 
     def get_queryset(self):
         return Listing.objects.filter(seller=self.request.user).order_by('-created_at')
