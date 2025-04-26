@@ -5,6 +5,9 @@ from .models import Listing
 from .serializers import ListingSerializer, ListingDetailSerializer
 from core.paginations import ListingPagination
 
+from .serializers import ListingSerializer, ImageSerializer, PriceHistorySerializer
+from .permissions import IsListingOwner
+from core.paginations import ListingPagination
 
 class ListingListCreateView(generics.ListCreateAPIView):
     queryset = Listing.objects.all()
@@ -36,7 +39,7 @@ class ListingImagesView(generics.ListCreateAPIView):
 
     def get_permissions(self):
         if self.request.method == 'POST':
-            return [permissions.IsAuthenticated(), IsListingOwner()]
+            return [IsAuthenticated(), IsListingOwner()]
         return [permissions.AllowAny()]
 
     def perform_create(self, serializer):
@@ -46,7 +49,7 @@ class ListingImagesView(generics.ListCreateAPIView):
 
 
 class ListingImageDeleteView(generics.DestroyAPIView):
-    permission_classes = [permissions.IsAuthenticated, IsListingOwner]
+    permission_classes = [IsAuthenticated, IsListingOwner]
 
     def get_queryset(self):
         listing_id = self.kwargs.get('listing_id')

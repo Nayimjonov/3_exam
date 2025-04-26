@@ -181,13 +181,13 @@ class ListingDetailSerializer(serializers.ModelSerializer):
         return representation
 
 
-class ListingImagesSerializer(serializers.ModelSerializer):
+class ImageSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(required=True)
     is_primary = serializers.BooleanField(default=False)
     order = serializers.IntegerField(default=0)
 
     class Meta:
-        model = ListingImage
+        model = Image
         fields = ['id', 'image', 'is_primary', 'order', 'created_at']
         read_only_fields = ['id', 'created_at']
 
@@ -195,10 +195,10 @@ class ListingImagesSerializer(serializers.ModelSerializer):
         listing = validated_data.get('listing')
         is_primary = validated_data.get('is_primary', False)
 
-        image = ListingImage.objects.create(**validated_data)
+        image = Image.objects.create(**validated_data)
 
         if is_primary:
-            ListingImage.objects.filter(listing=listing, is_primary=True).exclude(id=image.id).update(is_primary=False)
+            Image.objects.filter(listing=listing, is_primary=True).exclude(id=image.id).update(is_primary=False)
             listing.primary_image = image.image
             listing.save(update_fields=['primary_image'])
 
