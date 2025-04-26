@@ -27,9 +27,6 @@ class ListingRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ListingImagesListView(generics.ListAPIView):
-    """
-    API endpoint to list all images for a specific listing
-    """
     serializer_class = ListingImagesSerializer
     permission_classes = [AllowAny]
 
