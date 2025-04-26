@@ -26,18 +26,22 @@ class ListingRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         return ListingDetailSerializer
 
 
-class ListingImagesListView(generics.ListAPIView):
-    serializer_class = ListingImagesSerializer
-    permission_classes = [AllowAny]
+class ListingImagesView(generics.ListCreateAPIView):
+    """
+    GET: List all images for a listing
+    POST: Add a new image to a listing
+    """
+    serializer_class = ImageSerializer
+    parser_classes = [MultiPartParser, FormParser]
 
     def get_queryset(self):
         listing_id = self.kwargs.get('listing_id')
-        return ListingImage.objects.filter(listing_id=listing_id)
+        return Image.objects.filter(listing_id=listing_id).order_by('order')
 
-
-class ListingImagesCreateView(generics.CreateAPIView):
-    serializer_class = ListingImagesSerializer
-    permission_classes = [IsListingOwner]
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [permissions.IsAuthenticated(), IsListingOwner()]
+        return [permissions.AllowAny()]
 
     def perform_create(self, serializer):
         listing_id = self.kwargs.get('listing_id')
@@ -46,17 +50,47 @@ class ListingImagesCreateView(generics.CreateAPIView):
 
 
 class ListingImageDeleteView(generics.DestroyAPIView):
-    serializer_class = ListingImagesSerializer
-    permission_classes = [IsListingOwner]
+    """
+    DELETE: Remove an image from a listing
+    """
+    permission_classes = [permissions.IsAuthenticated, IsListingOwner]
 
     def get_queryset(self):
         listing_id = self.kwargs.get('listing_id')
-        return ListingImage.objects.filter(listing_id=listing_id)
+        return Image.objects.filter(listing_id=listing_id)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        # If deleting a primary image, try to set another image as primary
+        if instance.is_primary:
+            # Find the next available image
+            next_image = Image.objects.filter(
+                listing_id=self.kwargs.get('listing_id')
+            ).exclude(id=instance.id).order_by('order').first()
+
+            if next_image:
+                next_image.is_primary = True
+                next_image.save()
+
+                # Update listing's primary_image
+                instance.listing.primary_image = next_image.image
+                instance.listing.save(update_fields=['primary_image'])
+            else:
+                # No other images, set primary_image to None
+                instance.listing.primary_image = None
+                instance.listing.save(update_fields=['primary_image'])
+
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ListingPriceHistoryView(generics.ListAPIView):
+    """
+    GET: Retrieve price history for a listing
+    """
     serializer_class = PriceHistorySerializer
-    permission_classes = [AllowAny]
+    permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
         listing_id = self.kwargs.get('listing_id')
@@ -64,9 +98,12 @@ class ListingPriceHistoryView(generics.ListAPIView):
 
 
 class FeaturedListingsView(generics.ListAPIView):
+    """
+    GET: Retrieve all featured listings
+    """
     serializer_class = ListingSerializer
-    permission_classes = [AllowAny]
-    pagination_class = ListingPagination  # Assuming you have this defined
+    permission_classes = [permissions.AllowAny]
+    pagination_class = ListingPagination
 
     def get_queryset(self):
         return Listing.objects.filter(
@@ -77,8 +114,11 @@ class FeaturedListingsView(generics.ListAPIView):
 
 
 class MyListingsView(generics.ListAPIView):
+    """
+    GET: Retrieve all listings belonging to the authenticated user
+    """
     serializer_class = ListingSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
     pagination_class = ListingPagination
 
     def get_queryset(self):
