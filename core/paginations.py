@@ -22,3 +22,5 @@ class FeaturePagination(PageNumberPagination):
 class ListingPagination(PageNumberPagination):
     page_size = 20
 
+class MessagePagination(PageNumberPagination):
+    page_size = 20
